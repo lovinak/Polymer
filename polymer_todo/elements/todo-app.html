@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <link href="../bower_components/polymer/polymer.html" rel="import">
+        <link href="../bower_components/paper-toolbar/paper-toolbar.html" rel="import">
+        <link href="../bower_components/paper-icon-button/paper-icon-button.html" rel="import">
+        <link href="../bower_components/paper-material/paper-material.html" rel="import">
+        <link href="../bower_components/paper-menu/paper-menu.html" rel="import">
+        <link href="../bower_components/paper-item/paper-item.html" rel="import">
+        <link href="../bower_components/paper-input/paper-input.html" rel="import">
+        <link href="../bower_components/iron-icons/iron-icons.html" rel="import">
+        <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+        <style is="custom-style">
+            .big {
+                --iron-icon-height: 32px;
+                --iron-icon-width: 32px;
+            }
+        </style>             
+    </head>
+    <body fullbleed>
+        <dom-module id="todo-app">
+            <template>
+            <!-- To create a new Todo -->
+            <paper-material id="todoEntry" class="paper-material" elevation="2">
+        
+                <paper-toolbar class="paper-toolbar">
+                    <paper-icon-button class="big" icon="menu" on-tap="onTap"></paper-icon-button>
+                    <div flex> Things To Do! by <span>{{name}}</span></div>
+                </paper-toolbar>
+        
+                <paper-input id="tTask" bind-value="{{taskInput}}" label="Task" type+"email"></paper-input>
+                <paper-input id="tUser" bind-value="{{userInput}}" char-counter label="Username" maxlength="16"></paper-input>
+                <paper-fab class="big" icon="add" on-tap="postTask"></paper-fab>
+        
+            <template is="dom-if" if="{{!todo.length}}">
+                <paper-material>
+                    <paper-item>No Tasks remain. Updates are Real-Time so stay tuned!</paper-item>
+                </paper-material>
+            </template>
+        
+            <template is="dom-repeat" items="{{todos}}">
+                <span>{{item.user}}</span> needs to <span>{{item.task}}</span>
+                <paper-icon-button class="big" raised on-tap="removeTask" icon="delete">
+                </paper-icon-button>
+            </template>
+            </paper-material>
+        
+            </template>
+        </dom-module>
+        
+        <script>
+        Polymer({
+            is:"todo-app",
+            properties:{
+                todos: {
+                    type: Array,
+                    reflectToAttribute: true,
+                    notify:true,
+                    value:[{user:"lovina", task:"read polymer"}, {user:"tripti", task:"fill timesheet"}]
+                }
+            },
+            postTask:function(){
+                var task = this.taskInput;
+                var user = this.userInput;
+                this.push('todos', {task:task, user:user});
+                console.log(this.todos);
+                },
+            removeTask:function(e){
+                var target = e.model;
+                var index = this.todos.indexOf(target.get('item'));
+                this.splice('todos', index, 1);
+            },
+            onTap:function(){
+                console.log("Menu clicked");                
+            }
+        });
+        
+        </script>
+    </body>
+</html>
+

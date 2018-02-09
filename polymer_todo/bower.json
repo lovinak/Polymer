@@ -1,0 +1,22 @@
+{
+  "name": "polymer_todo",
+  "homepage": "https://github.com/lovinak/Polymer",
+  "authors": [
+    "LK <lovina.kackattupara@citiustech.com>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#1.0.0",
+    "iron-elements": "polymerelements/iron-elements#1.0.10",
+    "paper-elements": "polymerelements/paper-elements#1.0.7"
+  }
+}

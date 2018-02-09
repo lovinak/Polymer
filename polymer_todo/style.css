@@ -1,0 +1,29 @@
+html, body {
+  margin: 0;
+  font-family: 'Roboto', 'Noto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #f1f1f1;
+  max-height: 368px;
+  display: block
+}
+paper-toolbar {
+  background-color:cornflowerblue;
+  width:500px;
+  margin:0px auto;
+  padding:100px;
+  height: 30px;
+  position: relative;
+}
+paper-material {
+  position: relative;
+  display: inline-block;
+  align-content: center;
+}
+paper-icon-button {
+  margin-left: 24px;
+  position: relative;
+}
+paper-material iron-icon {
+  --iron-icon-width: 10px;
+  --iron-icon-height: 10px;
+}
