@@ -1,0 +1,23 @@
+{
+  "name": "polymer_app",
+  "homepage": "https://github.com/lovinak/Polymer",
+  "authors": [
+    "LK <lovina.kackattupara@citiustech.com>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#1.0.0",
+    "px-data-table": "^5.1.12",
+    "iron-ajax": "^2.1.0",
+    "px-icon-set": "^2.1.4"
+  }
+}
