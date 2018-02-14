@@ -5,14 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>My Polymer App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="import" href="./bower_components/polymer/polymer.html"/>
     <script src=".\bower_components\webcomponentsjs\webcomponents-lite.min.js"></script>
     <link rel="import" href=".\bower_components\px-data-table\px-data-table.html"></link>
     <link rel="import" href=".\bower_components\iron-ajax\iron-ajax.html"></link>
     <link rel="import" href=".\bower_components\px-icon-set\px-icon-set.html"></link>
+    <link rel="import" href=".\bower_components\px-modal\px-modal.html"/>
+	<link rel="import" href=".\bower_components\px-theme\px-theme-styles.html">
+      
 </head>
 <body>
     <dom-module id="px-data-table-demo">
         <template>
+			<style include="px-theme-styles" is="custom-style"></style>
             <iron-ajax
                 auto
                 url="json_array.json"
@@ -21,15 +26,10 @@
                 on-response = "_handleResponse"
                 debounce-duration="300">
             </iron-ajax>
-            <px-data-table id="mytable" table-data="{{data}}" language="en" hide-pagination-control>
-                <px-data-table-column>
-                    <span on-mouseover='onCellHovered' on-mouseout='onCellUnHovered'>
-                    <template is="dom-if" if="{{_showCustomIcon}}" >
-                        <px-icon icon="px-utl:chevron-up"></px-icon>
-                    </template>
-                    </span>
+            <px-data-table id="mytable" table-data="{{data}}" language="en">
+				<px-data-table-column name='icon' type="html">
                 </px-data-table-column>
-                <px-data-table-column name='name' type="html">
+                <px-data-table-column name='name' sortable>
                 </px-data-table-column>
                 <px-data-table-column name='position'>
                 </px-data-table-column>
@@ -37,15 +37,18 @@
                 </px-data-table-column>
                 <px-data-table-column name='extn'>
                 </px-data-table-column>
-                <px-data-table-column name='start_date'>
+                <px-data-table-column name='start_date' sortable>
                 </px-data-table-column>
-                <px-data-table-column name='salary'>
+                <px-data-table-column name='salary' sortable>
                 </px-data-table-column>
             </px-data-table>
-
+			<px-modal id="modal" accept-text="Ok" header-text="Employee Summary" reject-text="Cancel">
+			</px-modal>
         </template>
     </dom-module>
+	
     <px-data-table-demo></px-data-table-demo>
+	
     <script>
         Polymer({
             is:"px-data-table-demo",
@@ -55,28 +58,37 @@
                     reflectToAttribute:true,
                     norify:true
                 },
-                _showCustomIcon:{
-                    type: Boolean,
-                    value: false
-                }
+				message:{
+					type:String,
+					reflectToAttribute:true,
+                    norify:true
+				},
+				icon:{
+					type:String,
+					reflectToAttribute:true,
+                    norify:true,
+					value:"<px-icon icon=\"px-vis:bring-to-front\"></px-icon>"
+				}
             },
             _handleResponse: function(event, request) {
-                this.data = request.response;
-            },
-            onCellHovered: function(evt){
-                this.set('_showCustomIcon', true);
-            },
-             onCellUnHovered: function(evt){
-                this.set('_showCustomIcon',false);
+                var response = request.response;
+                response.forEach( (row) => {
+                    Object.keys(row).forEach( (key) => {
+                      if (key == "icon") {
+                       row["icon"] = this.icon;
+                      }
+                    })
+                });
+                this.data = response;
             }
         });
-
+        var modal = document.querySelector('#modal');
         document.getElementById("mytable").addEventListener("px-row-click", function(e) {
             var clickedRow = e.detail.row.row;
-            //console.log("Row clicked", clickedRow);
             console.log(clickedRow.name.value + " is a " + clickedRow.position.value + " at " + clickedRow.office.value);
+			modal.bodyText = clickedRow.name.value + " is a " + clickedRow.position.value + " at " + clickedRow.office.value;
+			modal.opened = true;
         });
-        document.getElementsByClassName("px-data-table-cell-0")[0] = "<px-icon icon=\"px-utl:chevron-up\"></px-icon>";
     </script>
     </body>
 </html>

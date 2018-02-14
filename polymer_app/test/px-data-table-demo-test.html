@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Index Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <link rel="import" href="../index.html">
+</head>
+<body>
+    <test-fixture id="px-data-table-demo-fixture">
+        <template>
+            <px-data-table-demo></px-data-table-demo>
+        </template>
+    </test-fixture>
+
+    <script>
+        suite('px-data-table-demo', function(){
+            var myElement;
+
+            setup(function(){
+                myElement = fixture('px-data-table-demo-fixture'); 
+            });
+
+            test('Polymer exists', function() {
+                assert.isTrue(Polymer !== null);
+            });
+        });
+    </script>
+</body>
+</html>
