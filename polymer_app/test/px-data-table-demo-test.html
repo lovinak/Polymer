@@ -12,20 +12,55 @@
 <body>
     <test-fixture id="px-data-table-demo-fixture">
         <template>
-            <px-data-table-demo></px-data-table-demo>
+            <px-data-table-demo>
+                <iron-ajax
+                     auto
+                     url="/json_response"
+                     handle-as="json"
+                     on-response="_handleResponse"></iron-ajax>
+                <px-data-table id="mytable" table-data="{{data}}" language="en"></px-data-table>
+                <px-modal id="modal" accept-text="Ok" header-text="Employee Summary" reject-text="Cancel"></px-modal>
+            </px-data-table-demo>
         </template>
     </test-fixture>
 
     <script>
         suite('px-data-table-demo', function(){
             var myElement;
+            var ajax, request, server;
+            var responseHeaders = {json:{'Content-type':'application/json'}};
 
             setup(function(){
-                myElement = fixture('px-data-table-demo-fixture'); 
+                myElement = fixture('px-data-table-demo-fixture');
+                server = sinon.fakeServer.create();
+                server.respondWith(
+                    'GET', /\/json_response.*/, [
+                        200, responseHeaders.json,
+                        '{"icon":"{{icon}}",name": "Dummy Singh","position": "Dummy Support",office": "Dummy City"}'
+                    ]
+                );
+            });
+
+            teardown(function(){
+                server.restore();
             });
 
             test('Polymer exists', function() {
                 assert.isTrue(Polymer !== null);
+            });
+
+            suite('iron-ajax', function(){
+                setup(function(){
+                    ajax = myElement.$$('iron-ajax');
+                });
+
+                test('making GET request for Json response', function(){
+                    request = ajax.generateRequest();
+                    server.respond();
+                    expect(resquest.response).to.be.ok;
+                    expect(resquest.response).to.be.an('object');
+                    expect(resquest.response.name).to.be.equal("Dummy Singh");
+                });
             });
         });
     </script>
