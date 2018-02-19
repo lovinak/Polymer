@@ -7,19 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
-    <link rel="import" href="../index.html">
+    <link rel="import" href="../px-data-table-demo.html">
 </head>
 <body>
     <test-fixture id="px-data-table-demo-fixture">
         <template>
             <px-data-table-demo>
-                <iron-ajax
-                     auto
-                     url="/json_response"
-                     handle-as="json"
-                     on-response="_handleResponse"></iron-ajax>
-                <px-data-table id="mytable" table-data="{{data}}" language="en"></px-data-table>
-                <px-modal id="modal" accept-text="Ok" header-text="Employee Summary" reject-text="Cancel"></px-modal>
             </px-data-table-demo>
         </template>
     </test-fixture>
@@ -34,14 +27,15 @@
                 myElement = fixture('px-data-table-demo-fixture');
                 server = sinon.fakeServer.create();
                 server.respondWith(
-                    'GET', /\/json_response.*/, [
+                    'GET', 'json_array.json', [
                         200, responseHeaders.json,
                         '{"icon":"{{icon}}",name": "Dummy Singh","position": "Dummy Support",office": "Dummy City"}'
                     ]
                 );
+                server.autoRespond = true;
             });
-
-            teardown(function(){
+            
+            teardown(function() {
                 server.restore();
             });
 
@@ -53,14 +47,33 @@
                 setup(function(){
                     ajax = myElement.$$('iron-ajax');
                 });
-
                 test('making GET request for Json response', function(){
                     request = ajax.generateRequest();
                     server.respond();
-                    expect(resquest.response).to.be.ok;
-                    expect(resquest.response).to.be.an('object');
-                    expect(resquest.response.name).to.be.equal("Dummy Singh");
+                    expect(request.response).to.be.ok;
+                    expect(request.response).to.be.an('object');
+                    expect(request.response.name).to.be.equal("Dummy Singh");
                 });
+            });
+
+            suite('<px-data-table-demo>', function(){
+                setup(function(){
+                    myElement.data = '[{"icon":"{{icon}}",name": "Dummy Singh","position": "Dummy Support",office": "Dummy City"}]';
+                    this.timeout(10*1000);
+                });
+
+                test('px-data-table-demo object should be of type "px-data-table-demo"', function() {
+                    assert(myElement.is === 'px-data-table-demo', 'px-data-table-demo object has incorrect type: ' + myElement.is);
+                });
+
+                test('set dummy data into the table', function() {
+                    myElement.$$('px-data-table').tableData = '[{"icon":"{{icon}}",name": "Dummy Singh","position": "Dummy Support",office": "Dummy City"}]';
+                    var dummy = {"detail":{"row":{"row":{"name":{"value":"Dummy Singh"},"position":{"value":"Dummy Support"},"office":{"value":"Dummy City"}}}}};
+                    myElement.fire("px-row-click",dummy);
+                    expect(myElement.$$('px-modal').opened).to.be(true);
+                    debugger;
+                });
+                
             });
         });
     </script>
