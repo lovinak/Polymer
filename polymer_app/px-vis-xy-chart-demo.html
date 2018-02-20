@@ -11,21 +11,24 @@
     <link rel="import" href=".\bower_components\px-modal\px-modal.html"/>
     <link rel="import" href=".\bower_components\px-vis-xy-chart\px-vis-xy-chart.html"/>
     <link rel="import" href=".\bower_components\px-dropdown\px-dropdown.html"/>
-	<link rel="import" href=".\bower_components\px-theme\px-theme-styles.html">
+    <link rel="import" href=".\bower_components\px-theme\px-theme-styles.html">
+    <script src=".\bower_components\html2canvas\build\html2canvas.js"></script>
+    <script src=".\bower_components\jspdf\dist\jspdf.debug.js"></script>
+    <!--<script src=".\bower_components\html2canvas\build\html2canvas.min.js"></script>-->
       
 </head>
 <body>
     <dom-module id="px-vis-xy-chart-demo">
         <template>
             <style include="px-theme-styles" is="custom-style"></style>
-            <!--<px-dropdown
-                items='[{"key":"1","val":"Save as PDF"},{"key":"2","val":"Save as Image (JPEG/PNG..)"}]'
+            <px-dropdown 
+                items='[{"key":"PDF","val":"Save as PDF"},{"key":"Image","val":"Save as Image (JPEG/PNG..)"}]'
                 sort-mode="key"
                 button-style="icon"
-                icon="px-utl:app-settings"
-                disable-clear
+                icon="px-utl:save"
+                disableClear
                 trigger-height="30">
-            </px-dropdown>-->
+            </px-dropdown>
             <!--<px-vis-xy-chart
                 debounce-resize-timing="250"
                 width="590"
@@ -56,7 +59,8 @@
                 on-response = "_handleResponse"
                 debounce-duration="300">
             </iron-ajax>
-            <px-vis-xy-chart
+            <div id="capture">
+            <px-vis-xy-chart id="mychart"
                 debounce-resize-timing="250"
                 width="590.015625"
                 height="334"
@@ -80,6 +84,7 @@
                 nav-margin='{"top":5,"right":10,"bottom":20,"left":10}'
                 nav-series-config='{"T48A":{"type":"line","name":"Trend","x":"Date","y":"T48A"}}'>
             </px-vis-xy-chart>
+            </div>
         </template>
     </dom-module>
     
@@ -94,12 +99,38 @@
                 }
             },
             listeners: {
-                
+                "px-dropdown-selection-changed": "_save_as"
             },
             _handleResponse: function(event, request) {
                 var response = request.response;
                 this.data = response;
-            }   
+            },
+            _save_as: function(event){
+                var selected = this.$$("px-dropdown").selected;
+                if(selected != null){
+                    html2canvas(document.querySelector("#capture"), {
+                        onrendered: function(canvas) {
+                            var a = document.createElement('a');        
+                            var imgData = canvas.toDataURL(
+                                'image/png');
+                            if(selected=="Image"){
+                                a.href = imgData.replace("image/png", "image/octet-stream");
+                                a.download = 'capture.png';
+                                a.click();
+                            }
+                            else if(selected =="PDF"){              
+                                var doc = new jsPDF('p', 'mm');
+                                var width = canvas.width;
+                                var height = canvas.clientHeight;
+                                doc.addImage(imgData, 'PNG', 20, 20);
+                                //doc.addImage(imgData, 'PNG',0,0)//, 50, 50);
+                                //debugger;
+                                doc.save('chart.pdf');
+                            }
+                        }
+                    });
+                }
+            }  
         });
     </script>
 </body>
