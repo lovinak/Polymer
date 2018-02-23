@@ -21,6 +21,11 @@
     <dom-module id="px-vis-xy-chart-demo">
         <template>
             <style include="px-theme-styles" is="custom-style"></style>
+            <style is="custom-style">
+                body {
+                    background-color: white;
+                }
+            </style>
             <px-dropdown 
                 items='[{"key":"PDF","val":"Save as PDF"},{"key":"Image","val":"Save as Image (JPEG/PNG..)"}]'
                 sort-mode="key"
@@ -109,20 +114,22 @@
                 var selected = this.$$("px-dropdown").selected;
                 if(selected != null){
                     html2canvas(document.querySelector("#capture"), {
+                        allowTaint: false,
+                        background :'#FFFFFF',
                         onrendered: function(canvas) {
                             var a = document.createElement('a');        
                             var imgData = canvas.toDataURL(
-                                'image/png');
+                                'image/jpeg');
                             if(selected=="Image"){
-                                a.href = imgData.replace("image/png", "image/octet-stream");
-                                a.download = 'capture.png';
+                                a.href = imgData.replace("image/jpeg", "image/octet-stream");
+                                a.download = 'capture.jpg';
                                 a.click();
                             }
                             else if(selected =="PDF"){              
                                 var doc = new jsPDF('p', 'mm');
                                 var width = canvas.width;
                                 var height = canvas.clientHeight;
-                                doc.addImage(imgData, 'PNG', 20, 20);
+                                doc.addImage(imgData, 'PNG', 15, 40,180, 160);
                                 //doc.addImage(imgData, 'PNG',0,0)//, 50, 50);
                                 //debugger;
                                 doc.save('chart.pdf');
