@@ -1,0 +1,18 @@
+
+<script>
+    PxValidators = {
+    errorObject : function() {
+      return {passedValidation: false,
+      failedValidationFunctionName: '',
+      failedValidationErrorMessage: ''};
+    },
+    isNotNumber: function(value) {
+      var errObj = PxValidators.errorObject();
+      errObj.failedValidationFunctionName = 'isNotNumber';
+      errObj.failedValidationErrorMessage = 'Enter a string value';
+      errObj.passedValidation = isNaN(value);
+      return errObj;
+    }
+  };
+
+</script>

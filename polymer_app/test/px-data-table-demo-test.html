@@ -69,6 +69,7 @@
                 test('set dummy data into the table', function() {
                     myElement.$$('px-data-table').tableData = '[{"icon":"{{icon}}",name": "Dummy Singh","position": "Dummy Support",office": "Dummy City"}]';
                     var dummy = {"detail":{"row":{"row":{"name":{"value":"Dummy Singh"},"position":{"value":"Dummy Support"},"office":{"value":"Dummy City"}}}}};
+                    debugger;
                     myElement.fire("px-row-click",dummy);
                     expect(myElement.$$('px-modal').opened).to.be(true);
                     debugger;

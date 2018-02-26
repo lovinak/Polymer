@@ -30,12 +30,15 @@
             <px-data-table id="mytable" table-data="{{data}}" language="en">
 				<px-data-table-column name='icon' type="html">
                 </px-data-table-column>
-                <px-data-table-column name='name' sortable>
+                <px-data-table-column name='name' sortable editable>
+                    <px-validation>
+                        <px-validator validation-method="isNotNumber" import="px-exp-validator.html"></px-validator>
+                    </px-validation>
                     <px-data-table-highlight
                     highlight-type="cell"
                     highlight-value="high"
                     highlight-method="wordBeginsWithLetterCorH"
-                    import="px-exp-highlight.html">      
+                    import="px-exp-highlight.html">
                 </px-data-table-column>
                 <px-data-table-column name='position'>
                 </px-data-table-column>
@@ -48,7 +51,7 @@
                 <px-data-table-column name='salary' sortable>
                 </px-data-table-column>
             </px-data-table>
-			<px-modal id="modal" accept-text="Ok" header-text="Employee Summary" reject-text="Cancel">
+			<px-modal id="modal" accept-text="Ok" header-text="Summary" reject-text="Cancel">
 			</px-modal>
         </template>
     </dom-module>
@@ -70,7 +73,8 @@
 				}
             },
             listeners: {
-                "px-row-click": "_getRowClicked"
+                "px-row-click": "_getRowClicked",
+                "px-cell-click":"_getCellClicked"
             },    
             _handleResponse: function(event, request) {
                 var response = request.response;
@@ -84,12 +88,17 @@
                 this.data = response;
             },
             _getRowClicked: function(e){
-                var modal = document.querySelector('#modal');
+                var modal = this.querySelector('#modal');
                 var clickedRow = e.detail.row.row;
                 console.log(clickedRow.name.value + " is a " + clickedRow.position.value + " at " + clickedRow.office.value);
                 modal.bodyText = clickedRow.name.value + " is a " + clickedRow.position.value + " at " + clickedRow.office.value;
                 modal.opened = true;
-            }
+            },
+            _getCellClicked: function(e){
+                //clear hoghlight on 
+                var edit_cell = this.querySelector('.cell__edit');
+                edit_cell.toggleClass('px-data-table-highlight--high', false);
+            },
         });
     </script>
     </body>
